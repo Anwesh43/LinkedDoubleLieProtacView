@@ -20,6 +20,7 @@ val sizeFactor : Float = 2.7f
 val strokeFactor : Int = 90
 val foreColor : Int = Color.parseColor("#673AB7")
 val backColor : Int = Color.parseColor("#BDBDBD")
+val delay : Long = 20
 val rotDeg : Float = 45f
 
 fun Int.inverse() : Float = 1f / this
@@ -116,7 +117,7 @@ class DoubleLineProtacView(ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(delay)
                     view.invalidate()
                 } catch(ex : Exception) {
 
