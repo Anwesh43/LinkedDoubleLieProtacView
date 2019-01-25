@@ -195,4 +195,26 @@ class DoubleLineProtacView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : DoubleLineProtacView) {
+
+        private val animator : Animator = Animator(view)
+        private var dlp : DoubleLineProtac = DoubleLineProtac(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            dlp.draw(canvas, paint)
+            animator.animate {
+                dlp.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            dlp.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
