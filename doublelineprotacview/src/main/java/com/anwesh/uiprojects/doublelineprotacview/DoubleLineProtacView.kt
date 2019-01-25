@@ -30,17 +30,17 @@ fun Float.mirrorValue(a : Int, b : Int) : Float = (1 - scaleFactor()) * a.invers
 fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b) * scGap * dir
 fun Int.jsf() : Float = 1f - 2 * this
 
-fun Canvas.drawRotatedLine(i : Int, size : Float, scale: Float, paint : Paint) {
+fun Canvas.drawRotatedLine(i : Int, y : Float, size : Float, scale: Float, paint : Paint) {
     save()
-    translate(0f, -size)
+    translate(0f, -y)
     rotate(rotDeg * i.jsf() * scale)
-    drawLine(0f, 0f, 0f, size * 2, paint)
+    drawLine(0f, 0f, 0f, size, paint)
     restore()
 }
 
-fun Canvas.drawHorizLine(i : Int, y : Float, size : Float, sc1 : Float, sc2 : Float, paint : Paint) {
+fun Canvas.drawHorizLine(i : Int, oy : Float, y : Float, size : Float, sc1 : Float, sc2 : Float, paint : Paint) {
     save()
-    translate(-size * sc2 * i.jsf(), y)
+    translate(-size * sc2 * i.jsf(), oy + (y - oy) * sc1)
     drawLine(0f, 0f, -size * i.jsf() * sc1, 0f, paint)
     restore()
 }
@@ -53,14 +53,17 @@ fun Canvas.drawDLPNode(i : Int, scale : Float, paint : Paint) {
     val sc1 : Float = scale.divideScale(0, 2)
     val sc2 : Float = scale.divideScale(1, 2)
     val yGap : Float = size * Math.cos(rotDeg * Math.PI / 180).toFloat()
-    val xGap : Float = size * Math.sin(rotDeg * Math.PI / 180).toFloat()
+    val xGap : Float = 2 * size * Math.sin(rotDeg * Math.PI / 180).toFloat()
+    paint.color = foreColor
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
+    paint.strokeCap = Paint.Cap.ROUND
     save()
     translate(w/2, gap * (i + 1))
     for (j in 0..(lines - 1)) {
         val scj1 : Float = sc1.divideScale(j, lines)
         val scj2 : Float = sc2.divideScale(j, lines)
-        drawRotatedLine(j, yGap, scj1, paint)
-        drawHorizLine(j, yGap, xGap, scj1, scj2, paint)
+        drawRotatedLine(j, yGap, 2 * size, scj1, paint)
+        drawHorizLine(j, size, yGap, xGap, scj1, scj2, paint)
     }
     restore()
 }
@@ -224,7 +227,7 @@ class DoubleLineProtacView(ctx : Context) : View(ctx) {
         fun create(activity : Activity) : DoubleLineProtacView {
             val view : DoubleLineProtacView = DoubleLineProtacView(activity)
             activity.setContentView(view)
-            return view 
+            return view
         }
     }
 }
