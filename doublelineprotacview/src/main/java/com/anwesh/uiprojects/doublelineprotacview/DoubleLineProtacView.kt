@@ -39,9 +39,14 @@ fun Canvas.drawRotatedLine(i : Int, y : Float, size : Float, scale: Float, paint
 }
 
 fun Canvas.drawHorizLine(i : Int, oy : Float, y : Float, size : Float, sc1 : Float, sc2 : Float, paint : Paint) {
+    val x : Float = -size * i.jsf()
     save()
-    translate(-size * sc2 * i.jsf(), oy + (y - oy) * sc1)
-    drawLine(0f, 0f, -size * i.jsf() * sc1, 0f, paint)
+    if (sc1 > 0) {
+        drawLine(x * sc2, oy + (y - oy) * sc2, x * sc1, oy + (y - oy) * sc1, paint)
+    }
+    if (sc2 > 0) {
+        drawLine(x, y, x + x * sc2, y, paint)
+    }
     restore()
 }
 
@@ -63,7 +68,7 @@ fun Canvas.drawDLPNode(i : Int, scale : Float, paint : Paint) {
         val scj1 : Float = sc1.divideScale(j, lines)
         val scj2 : Float = sc2.divideScale(j, lines)
         drawRotatedLine(j, yGap, 2 * size, scj1, paint)
-        drawHorizLine(j, size, yGap, xGap, scj1, scj2, paint)
+        drawHorizLine(j, -yGap + 2 * size, yGap, xGap, scj1, scj2, paint)
     }
     restore()
 }
